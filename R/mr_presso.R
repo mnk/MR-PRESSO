@@ -1,3 +1,4 @@
+import("stats")
 mr_presso <- function(BetaOutcome, BetaExposure, SdOutcome, SdExposure, data, OUTLIERtest = FALSE, DISTORTIONtest = FALSE, SignifThreshold = 0.05, NbDistribution = 1000, seed = NULL){
 
 	if(!is.null(seed))
@@ -113,11 +114,11 @@ mr_presso <- function(BetaOutcome, BetaExposure, SdOutcome, SdExposure, data, OU
 	}
 
 	# 5- Formatting the results
-	GlobalTest$Pvalue <- ifelse(GlobalTest$Pvalue == 0, paste0("<", 1/NbDistribution), GlobalTest$Pvalue)
+#	GlobalTest$Pvalue <- ifelse(GlobalTest$Pvalue == 0, paste0("<", 1/NbDistribution), GlobalTest$Pvalue)
 	if(OUTLIERtest){
 		OutlierTest$Pvalue <- replace(OutlierTest$Pvalue, OutlierTest$Pvalue == 0, paste0("<", nrow(data)/NbDistribution))
 		if(DISTORTIONtest){
-			BiasTest$Pvalue <- ifelse(BiasTest$Pvalue == 0, paste0("<", 1/NbDistribution), BiasTest$Pvalue)
+#			BiasTest$Pvalue <- ifelse(BiasTest$Pvalue == 0, paste0("<", 1/NbDistribution), BiasTest$Pvalue)
 			res <- list(`Global Test` = GlobalTest, `Outlier Test` = OutlierTest, `Distortion Test` = BiasTest)
 		} else {
 			res <- list(`Global Test` = GlobalTest, `Outlier Test` = OutlierTest)
@@ -139,5 +140,10 @@ mr_presso <- function(BetaOutcome, BetaExposure, SdOutcome, SdExposure, data, OU
 	row.names(MR) <- NULL
 
 	res <- list(`Main MR results` = MR, `MR-PRESSO results` = res)
-	return(res)
+	return(cbind.data.frame(
+	  setNames(data.frame(summary(mod_all)$coefficients), c('Beta', 'SE', 't', 'p')),
+	  setNames(data.frame(summary(mod_noOutliers)$coefficients), c('no_Beta', 'no_SE', 'no_t', 'no_p')),
+	  GlobalTest$Pvalue,
+	  BiasTest$Pvalue
+	  ))
 }
