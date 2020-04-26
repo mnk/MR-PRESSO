@@ -140,10 +140,20 @@ mr_presso <- function(BetaOutcome, BetaExposure, SdOutcome, SdExposure, data, OU
 	row.names(MR) <- NULL
 
 	res <- list(`Main MR results` = MR, `MR-PRESSO results` = res)
+	if (!exists("mod_noOutliers")) {
+	  mod_noOutliers_summary <- matrix(ncol = 4, nrow = 1)
+	} else {
+	  mod_noOutliers_summary <- summary(mod_noOutliers)$coefficients
+	}
+	if (!exists("BiasTest")) {
+	  BiasTest_p <- NA
+	} else {
+	  BiasTest_p <- BiasTest$Pvalue
+	}
 	return(cbind.data.frame(
 	  setNames(data.frame(summary(mod_all)$coefficients), c('Beta', 'SE', 't', 'p')),
-	  setNames(data.frame(summary(mod_noOutliers)$coefficients), c('no_Beta', 'no_SE', 'no_t', 'no_p')),
+    setNames(data.frame(mod_noOutliers_summary), c('no_Beta', 'no_SE', 'no_t', 'no_p')),
 	  GlobalTest$Pvalue,
-	  BiasTest$Pvalue
+	  BiasTest_p
 	  ))
 }
