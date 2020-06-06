@@ -1,5 +1,6 @@
 mr_presso <- function(BetaOutcome, BetaExposure, SdOutcome, SdExposure, data, OUTLIERtest = FALSE, DISTORTIONtest = FALSE, SignifThreshold = 0.05, NbDistribution = 1000, seed = NULL){
 
+  orgData <- data
 	if(!is.null(seed))
 		set.seed(seed)
 
@@ -149,10 +150,12 @@ mr_presso <- function(BetaOutcome, BetaExposure, SdOutcome, SdExposure, data, OU
 	} else {
 	  BiasTest_p <- BiasTest$Pvalue
 	}
+	outLierSNPs <- paste(orgData[refOutlier, 1],collapse=" ")
 	return(cbind.data.frame(
 	  setNames(data.frame(summary(mod_all)$coefficients), c('Beta', 'SE', 't', 'p')),
     setNames(data.frame(mod_noOutliers_summary), c('no_Beta', 'no_SE', 'no_t', 'no_p')),
 	  GlobalTest$Pvalue,
-	  BiasTest_p
+	  BiasTest_p,
+	  outLierSNPs
 	  ))
 }
