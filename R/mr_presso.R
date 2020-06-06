@@ -150,12 +150,16 @@ mr_presso <- function(BetaOutcome, BetaExposure, SdOutcome, SdExposure, data, OU
 	} else {
 	  BiasTest_p <- BiasTest$Pvalue
 	}
+	SNPtotal <- nrow(orgData)
+	SNPoutliers <- length(refOutlier)
 	outLierSNPs <- paste(orgData[refOutlier, 1],collapse=" ")
 	return(cbind.data.frame(
 	  setNames(data.frame(summary(mod_all)$coefficients), c('Beta', 'SE', 't', 'p')),
     setNames(data.frame(mod_noOutliers_summary), c('no_Beta', 'no_SE', 'no_t', 'no_p')),
 	  GlobalTest$Pvalue,
 	  BiasTest_p,
+	  SNPtotal,
+	  SNPoutliers,
 	  outLierSNPs
 	  ))
 }
