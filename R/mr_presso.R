@@ -1,6 +1,7 @@
 mr_presso <- function(BetaOutcome, BetaExposure, SdOutcome, SdExposure, data, OUTLIERtest = FALSE, DISTORTIONtest = FALSE, SignifThreshold = 0.05, NbDistribution = 1000, seed = NULL){
 
   orgData <- data
+  refOutlier <- c()
 	if(!is.null(seed))
 		set.seed(seed)
 
